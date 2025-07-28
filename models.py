@@ -55,3 +55,11 @@ class JobOffer(Base):
     experience_years = Column(Integer) # Années d'expérience (optionnel)
     requirements = Column(JSON)
 
+
+class User(Base):
+    __tablename__ = "users"  # ou "rh_users" si tu veux restreindre à RH uniquement
+
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True, index=True, nullable=False)
+    hashed_password = Column(String, nullable=False)
+    role = Column(String, default="rh")  # optionnel : "rh", "admin", etc.
