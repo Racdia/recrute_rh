@@ -27,7 +27,6 @@ def llm_extract_cv_info(cv_text):
 
     Retourne uniquement le JSON.
     """
-
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": prompt}],
@@ -104,7 +103,6 @@ def compute_cv_score(candidate, job):
 
 
 def analyze_soft_skills_llm(transcript, job):
-    # Ici, prompt LLM pour noter soft skills demandés dans l'offre à partir de la transcription
     prompt = f"""À partir de ce texte (transcription d'une vidéo de présentation) :
 ---
 {transcript}
@@ -115,13 +113,11 @@ Donne-moi une analyse JSON avec :
 - "softskills_score": une note de 0 à 100.
 - "feedback": un court feedback RH personnalisé."""
 
-    # Tu utilises ton client LLM ou OpenAI
     llm_response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "system", "content": prompt}],
         temperature=0.3,
     )
-    # Suppose que la réponse est bien formatée (à sécuriser !)
     out = json.loads(llm_response.choices[0].message.content)
     return out
 
@@ -161,4 +157,33 @@ def generate_candidate_summary_openai(candidate, job, scores, transcript):
         max_tokens=400,
         temperature=0.5,
     )
+    return response.choices[0].message.content.strip()
+
+def generate_learning_suggestions_openai(name: str, job_title: str, feedback: str) -> str:
+    prompt = f"""
+    Tu es un assistant RH et formateur expert. Tu dois conseiller un candidat qui a été refusé pour un poste donné, en lui proposant :
+
+    - 1 à 2 cours ou MOOCs en ligne pertinents (avec plateforme et lien si possible)
+    - Les compétences/matières à renforcer
+    - Un ton bienveillant, constructif, professionnel, pour l'encourager à progresser
+
+    ---
+    • Nom du candidat : {name}
+    • Poste visé : {job_title}
+    • Feedback RH reçu : {feedback}
+    ---
+
+    Fournis des suggestions pratiques, utiles, et bien formatées (avec bullet points HTML si utile).
+    """
+
+    response = openai.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "Tu es un expert RH et formateur professionnel."},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=400,
+        temperature=0.7,
+    )
+
     return response.choices[0].message.content.strip()

@@ -19,7 +19,6 @@ def generate_quiz(job_id: int, db: Session = Depends(get_db)):
     job = db.query(JobOffer).filter(JobOffer.id == job_id).first()
     if not job:
         return {"error": "Job not found"}
-    # Prompt LLM pour générer des questions adaptées au poste
     prompt = f"Génère 3 questions QCM de test technique sur le métier '{job.title}'. Prérequis : {job.requirements}. Format JSON: " \
              f'[{{"question":"", "options":["","","",""], "answer":""}}, ...]'
     response = openai.chat.completions.create(

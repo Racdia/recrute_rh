@@ -2,6 +2,7 @@ import os
 
 import openai
 from fastapi import APIRouter, Depends, Form
+from numpy.lib.recfunctions import join_by
 from sqlalchemy.orm import Session
 from database import SessionLocal
 from models import JobOffer
@@ -52,7 +53,11 @@ def list_job_offers(db: Session = Depends(get_db)):
         {
             "id": job.id,
             "title": job.title,
-            "description": job.description
+            "description": job.description,
+            "diploma_type" : job.diploma_type,
+            "education_level":job.education_level,
+            "filiere":job.filiere,
+            "experience_years":job.experience_years,
             # tu peux ajouter plus de champs si besoin
         }
         for job in jobs

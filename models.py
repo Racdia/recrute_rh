@@ -2,6 +2,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Float, JSON, ARRAY, DateTime, Text, ForeignKey
 from datetime import datetime
 
+from sqlalchemy.orm import relationship
+
 Base = declarative_base()
 
 class Candidate(Base):
@@ -39,6 +41,7 @@ class Application(Base):
     rh_note = Column(String, nullable=True)
     mini_report = Column(Text, nullable=True)
     date_applied = Column(DateTime, default=datetime.utcnow)
+    interview = relationship("Interview", uselist=False, back_populates="application")
 
 
 from sqlalchemy import Column, Integer, String, Text, JSON
@@ -63,3 +66,21 @@ class User(Base):
     username = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     role = Column(String, default="rh")  # optionnel : "rh", "admin", etc.
+
+class Interview(Base):
+        __tablename__ = "interviews"
+
+        id = Column(Integer, primary_key=True, index=True)
+        application_id = Column(Integer, ForeignKey("applications.id"), nullable=False)
+        interview_datetime = Column(DateTime, nullable=False)
+        location = Column(String, nullable=False)
+
+        # Relation vers Application
+        application = relationship("Application", back_populates="interview")
+
+class FAQ(Base):
+    __tablename__ = "faq"
+
+    id = Column(Integer, primary_key=True, index=True)
+    question = Column(Text, nullable=False)
+    answer   = Column(Text, nullable=False)
