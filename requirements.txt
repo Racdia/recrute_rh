@@ -53,7 +53,7 @@ spacy-legacy==3.0.12
 spacy-loggers==1.0.5
 srsly==2.5.1
 starlette==0.46.2
-streamlit~=1.46.1
+streamlit~=1.47.1
 thinc==8.1.12
 tqdm==4.67.1
 typer==0.9.4
@@ -71,3 +71,5 @@ passlib~=1.7.4
 pandas~=2.3.1
 bcrypt~=4.3.0
 psycopg2-binary~=2.9.10
+pinecone-client~=6.0.0
+sentence-transformers~=5.1.0
